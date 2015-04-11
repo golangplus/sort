@@ -14,12 +14,12 @@ import (
 // InterfaceStruct is a struct implementing sort.Interface given closures
 type InterfaceStruct struct {
 	// Len is the number of elements in the collection.
-    LenF func() int
-    // Less reports whether the element with
-    // index i should sort before the element with index j.
-    LessF func(i, j int) bool
-    // Swap swaps the elements with indexes i and j.
-    SwapF func(i, j int)
+	LenF func() int
+	// Less reports whether the element with
+	// index i should sort before the element with index j.
+	LessF func(i, j int) bool
+	// Swap swaps the elements with indexes i and j.
+	SwapF func(i, j int)
 }
 
 // sort.Interface.Len
