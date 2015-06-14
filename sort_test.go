@@ -104,3 +104,21 @@ func TestMerge(t *testing.T) {
 
 	assert.StringEqual(t, "merged", merged, expMerged)
 }
+
+func ExampleMerge() {
+	left := []int{1, 3, 5, 7}
+	right := []int{4, 6, 8, 10, 11}
+	var merged []int
+
+	Merge(len(left), len(right), func(l, r int) bool {
+		return left[l] < right[r]
+	}, func(l int) {
+		merged = append(merged, left[l])
+	}, func(r int) {
+		merged = append(merged, right[r])
+	})
+	fmt.Println(merged)
+
+	// Output:
+	// [1 3 4 5 6 7 8 10 11]
+}
