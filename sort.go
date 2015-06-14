@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package sortp is a plus to standard "sort" package.
+Package sortp is a plus to the standard "sort" package.
 */
 package sortp
 
@@ -47,4 +47,59 @@ func SortF(Len int, Less func(i, j int) bool, Swap func(i, j int)) {
 		LessF: Less,
 		SwapF: Swap,
 	})
+}
+
+// StableF calls sort.Stable by closures. Since Interface.Len always returns a constant,
+// it is an int parameter rather than a closure here.
+func StableF(Len int, Less func(i, j int) bool, Swap func(i, j int)) {
+	sort.Stable(InterfaceStruct{
+		LenF: func() int {
+			return Len
+		},
+		LessF: Less,
+		SwapF: Swap,
+	})
+}
+
+// IsSortedF is similar to sort.IsSorted but with closure as arguments.
+func IsSortedF(Len int, Less func(i, j int) bool) bool {
+	for i := 1; i < Len; i++ {
+		if Less(i, i-1) {
+			return false
+		}
+	}
+	return true
+}
+
+// ReverseLess returns a func which can be used to sort data in a reverse order.
+func ReverseLess(Less func(i, j int) bool) func(i, j int) bool {
+	return func(i, j int) bool {
+		return Less(j, i)
+	}
+}
+
+// Merge merges two sorted list.
+//
+// @param LeftLen is the length of the left list.
+// @param RightLen is the length of the right list.
+// @param Less compares the l-th element of left list and the r-th element of the right list.
+// @param AppendLeft appends the l-th element of the left list to the result list.
+// @param AppendRight appends the r-th element of the right list to the result list.
+func Merge(LeftLen, RightLen int, Less func(l, r int) bool, AppendLeft func(l int), AppendRight func(r int)) {
+	l, r := 0, 0
+	for l < LeftLen && r < RightLen {
+		if Less(l, r) {
+			AppendLeft(l)
+			l++
+		} else {
+			AppendRight(r)
+			r++
+		}
+	}
+	for ; l < LeftLen; l++ {
+		AppendLeft(l)
+	}
+	for ; r < RightLen; r++ {
+		AppendRight(r)
+	}
 }

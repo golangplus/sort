@@ -1,5 +1,5 @@
 # sort
-Plus to standard sort package.
+Plus to the standard `sort` package.
 
 [Godoc](http://godoc.org/github.com/golangplus/sort)
 
