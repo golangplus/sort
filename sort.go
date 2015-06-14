@@ -87,15 +87,24 @@ func ReverseLess(Less func(i, j int) bool) func(i, j int) bool {
 // @param AppendRight appends the r-th element of the right list to the result list.
 func Merge(LeftLen, RightLen int, Less func(l, r int) bool, AppendLeft func(l int), AppendRight func(r int)) {
 	l, r := 0, 0
-	for l < LeftLen && r < RightLen {
-		if Less(l, r) {
-			AppendLeft(l)
-			l++
-		} else {
-			AppendRight(r)
-			r++
+	if l < LeftLen && r < RightLen {
+		for {
+			if Less(l, r) {
+				AppendLeft(l)
+				l++
+				if l == LeftLen {
+					break
+				}
+			} else {
+				AppendRight(r)
+				r++
+				if r == RightLen {
+					break
+				}
+			}
 		}
 	}
+	// Append rest elements
 	for ; l < LeftLen; l++ {
 		AppendLeft(l)
 	}
