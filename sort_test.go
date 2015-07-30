@@ -122,3 +122,32 @@ func ExampleMerge() {
 	// Output:
 	// [1 3 4 5 6 7 8 10 11]
 }
+
+func ExampleDiffSortedList() {
+	from := []string{"a", "b", "d", "f"}
+	to := []string{"b", "c", "d", "g", "h"}
+
+	var extra, missing []string
+
+	DiffSortedList(len(from), len(to), func(f, t int) int {
+		if from[f] < to[t] {
+			return -1
+		}
+
+		if from[f] > to[t] {
+			return 1
+		}
+
+		return 0
+	}, func(f int) {
+		extra = append(extra, from[f])
+	}, func(t int) {
+		missing = append(missing, to[t])
+	})
+	fmt.Println("extra:", extra)
+	fmt.Println("missing:", missing)
+
+	// Output:
+	// extra: [a f]
+	// missing: [c g h]
+}

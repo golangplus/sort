@@ -112,3 +112,51 @@ func Merge(LeftLen, RightLen int, Less func(l, r int) bool, AppendLeft func(l in
 		AppendRight(r)
 	}
 }
+
+// DiffSortedList compares the difference of two sorted list.
+// LeftLen and RightLen are lengths of the left/right lists, respectively.
+// Compare returns -1/1/0 if l-th element of left list is less/greater/equal to the
+// r-th element of the right list, both are zero-based.
+// OutputLeft is called with the index of the element existing in the left list but not in the right list.
+// OutputLeft will be called with ascending indexes.
+// OutputRight is similar.
+// Please make no assumption of the calling order of OutputLeft/OutputRight.
+func DiffSortedList(LeftLen, RightLen int, Compare func(l, r int) int, OutputLeft, OutputRight func(index int)) {
+	l, r := 0, 0
+	if LeftLen > 0 && RightLen > 0 {
+	forloop:
+		for {
+			switch Compare(l, r) {
+			case -1:
+				OutputLeft(l)
+				l++
+				if l == LeftLen {
+					break forloop
+				}
+
+			case 1:
+				OutputRight(r)
+				r++
+				if r == RightLen {
+					break forloop
+				}
+
+			default:
+				l++
+				r++
+				if l == LeftLen || r == RightLen {
+					break forloop
+				}
+			}
+		}
+	}
+
+	for l < LeftLen {
+		OutputLeft(l)
+		l++
+	}
+	for r < RightLen {
+		OutputRight(r)
+		r++
+	}
+}
