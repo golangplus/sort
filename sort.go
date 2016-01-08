@@ -49,6 +49,44 @@ func SortF(Len int, Less func(i, j int) bool, Swap func(i, j int)) {
 	})
 }
 
+// IndexSort returns a slice of indexes l, so that data[l[i]], i = 0...N-1, are sorted.
+func IndexSort(data sort.Interface) []int {
+	indexes := make([]int, data.Len())
+	for i := range indexes {
+		indexes[i] = i
+	}
+	sort.Sort(InterfaceStruct{
+		LenF: data.Len,
+		LessF: func(i, j int) bool {
+			return data.Less(indexes[i], indexes[j])
+		},
+		SwapF: func(i, j int) {
+			indexes[i], indexes[j] = indexes[j], indexes[i]
+		},
+	})
+	return indexes
+}
+
+// IndexSortF is similar to IndexSort but with funcs as the input.
+func IndexSortF(Len int, Less func(i, j int) bool) []int {
+	indexes := make([]int, Len)
+	for i := range indexes {
+		indexes[i] = i
+	}
+	sort.Sort(InterfaceStruct{
+		LenF: func() int {
+			return Len
+		},
+		LessF: func(i, j int) bool {
+			return Less(indexes[i], indexes[j])
+		},
+		SwapF: func(i, j int) {
+			indexes[i], indexes[j] = indexes[j], indexes[i]
+		},
+	})
+	return indexes
+}
+
 // StableF calls sort.Stable by closures. Since Interface.Len always returns a constant,
 // it is an int parameter rather than a closure here.
 func StableF(Len int, Less func(i, j int) bool, Swap func(i, j int)) {
@@ -59,6 +97,44 @@ func StableF(Len int, Less func(i, j int) bool, Swap func(i, j int)) {
 		LessF: Less,
 		SwapF: Swap,
 	})
+}
+
+// IndexSort returns a slice of indexes l, so that data[l[i]], i = 0...N-1, are sorted.
+func IndexStable(data sort.Interface) []int {
+	indexes := make([]int, data.Len())
+	for i := range indexes {
+		indexes[i] = i
+	}
+	sort.Stable(InterfaceStruct{
+		LenF: data.Len,
+		LessF: func(i, j int) bool {
+			return data.Less(indexes[i], indexes[j])
+		},
+		SwapF: func(i, j int) {
+			indexes[i], indexes[j] = indexes[j], indexes[i]
+		},
+	})
+	return indexes
+}
+
+// IndexStableF is similar to IndexStable but with funcs as the input.
+func IndexStableF(Len int, Less func(i, j int) bool) []int {
+	indexes := make([]int, Len)
+	for i := range indexes {
+		indexes[i] = i
+	}
+	sort.Stable(InterfaceStruct{
+		LenF: func() int {
+			return Len
+		},
+		LessF: func(i, j int) bool {
+			return Less(indexes[i], indexes[j])
+		},
+		SwapF: func(i, j int) {
+			indexes[i], indexes[j] = indexes[j], indexes[i]
+		},
+	})
+	return indexes
 }
 
 // IsSortedF is similar to sort.IsSorted but with closure as arguments.

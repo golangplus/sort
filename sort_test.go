@@ -16,18 +16,63 @@ import (
 // Make sure InterfaceStruct implements sort.Interface
 var _ sort.Interface = InterfaceStruct{}
 
-func ExampleSortF() {
+func TestSortF(t *testing.T) {
 	data := []int{5, 3, 1, 8, 0}
 
-	SortF(len(data), func(i, j int) bool {
+	less := func(i, j int) bool {
 		return data[i] < data[j]
-	}, func(i, j int) {
+	}
+	swap := func(i, j int) {
 		data[i], data[j] = data[j], data[i]
-	})
+	}
+	SortF(len(data), less, swap)
 
-	fmt.Println(data)
-	// OUTPUT:
-	// [0 1 3 5 8]
+	assert.True(t, "IsSortedF", IsSortedF(len(data), less))
+	assert.Equal(t, "data", data, []int{0, 1, 3, 5, 8})
+}
+
+func TestIndexSort(t *testing.T) {
+	data := []int{5, 3, 1, 8, 0}
+	indexes := IndexSort(sort.IntSlice(data))
+	assert.Equal(t, "indexes", indexes, []int{4, 2, 1, 0, 3})
+}
+
+func TestIndexSortF(t *testing.T) {
+	data := []int{5, 3, 1, 8, 0}
+	indexes := IndexSortF(len(data), func(i, j int) bool {
+		return data[i] < data[j]
+	})
+	assert.Equal(t, "indexes", indexes, []int{4, 2, 1, 0, 3})
+}
+
+func TestStableF(t *testing.T) {
+	data := []int{5, 1, 1, 8, 1}
+	sub := []int{1, 2, 3, 4, 5}
+	less := func(i, j int) bool {
+		return data[i] < data[j]
+	}
+	swap := func(i, j int) {
+		data[i], data[j] = data[j], data[i]
+		sub[i], sub[j] = sub[j], sub[i]
+	}
+	StableF(len(data), less, swap)
+	assert.True(t, "IsSortedF", IsSortedF(len(data), less))
+	assert.Equal(t, "data", data, []int{1, 1, 1, 5, 8})
+	assert.Equal(t, "sub", sub, []int{2, 3, 5, 1, 4})
+}
+
+func TestIndexStable(t *testing.T) {
+	data := []int{5, 1, 1, 8, 1}
+	indexes := IndexStable(sort.IntSlice(data))
+	assert.Equal(t, "indexes", indexes, []int{1, 2, 4, 0, 3})
+}
+
+func TestIndexStableF(t *testing.T) {
+	data := []int{5, 1, 1, 8, 1}
+	indexes := IndexStableF(len(data), func(i, j int) bool {
+		return data[i] < data[j]
+	})
+	assert.Equal(t, "indexes", indexes, []int{1, 2, 4, 0, 3})
 }
 
 func ExampleInterfaceStruct() {
@@ -46,6 +91,17 @@ func ExampleInterfaceStruct() {
 	fmt.Println(data)
 	// OUTPUT:
 	// [0 1 3 5 8]
+}
+
+func TestIsSortedF(t *testing.T) {
+	list := []int{1, 2, 3}
+	assert.True(t, "IsSortedF", IsSortedF(len(list), func(i, j int) bool {
+		return list[i] < list[j]
+	}))
+	list = []int{2, 1, 3}
+	assert.False(t, "IsSortedF", IsSortedF(len(list), func(i, j int) bool {
+		return list[i] < list[j]
+	}))
 }
 
 func TestReverseLess(t *testing.T) {
@@ -108,8 +164,19 @@ func TestMerge(t *testing.T) {
 func ExampleMerge() {
 	left := []int{1, 3, 5, 7}
 	right := []int{4, 6, 8, 10, 11}
-	var merged []int
 
+	var merged []int
+	Merge(len(left), len(right), func(l, r int) bool {
+		return left[l] < right[r]
+	}, func(l int) {
+		merged = append(merged, left[l])
+	}, func(r int) {
+		merged = append(merged, right[r])
+	})
+	fmt.Println(merged)
+
+	left, right = right, left
+	merged = nil
 	Merge(len(left), len(right), func(l, r int) bool {
 		return left[l] < right[r]
 	}, func(l int) {
@@ -121,6 +188,7 @@ func ExampleMerge() {
 
 	// Output:
 	// [1 3 4 5 6 7 8 10 11]
+	// [1 3 4 5 6 7 8 10 11]
 }
 
 func ExampleDiffSortedList() {
@@ -128,16 +196,49 @@ func ExampleDiffSortedList() {
 	to := []string{"b", "c", "d", "g", "h"}
 
 	var extra, missing []string
-
 	DiffSortedList(len(from), len(to), func(f, t int) int {
 		if from[f] < to[t] {
 			return -1
 		}
-
 		if from[f] > to[t] {
 			return 1
 		}
+		return 0
+	}, func(f int) {
+		extra = append(extra, from[f])
+	}, func(t int) {
+		missing = append(missing, to[t])
+	})
+	fmt.Println("extra:", extra)
+	fmt.Println("missing:", missing)
 
+	from, to = to, from
+	extra, missing = nil, nil
+	DiffSortedList(len(from), len(to), func(f, t int) int {
+		if from[f] < to[t] {
+			return -1
+		}
+		if from[f] > to[t] {
+			return 1
+		}
+		return 0
+	}, func(f int) {
+		extra = append(extra, from[f])
+	}, func(t int) {
+		missing = append(missing, to[t])
+	})
+	fmt.Println("extra:", extra)
+	fmt.Println("missing:", missing)
+
+	to = from
+	extra, missing = nil, nil
+	DiffSortedList(len(from), len(to), func(f, t int) int {
+		if from[f] < to[t] {
+			return -1
+		}
+		if from[f] > to[t] {
+			return 1
+		}
 		return 0
 	}, func(f int) {
 		extra = append(extra, from[f])
@@ -150,4 +251,8 @@ func ExampleDiffSortedList() {
 	// Output:
 	// extra: [a f]
 	// missing: [c g h]
+	// extra: [c g h]
+	// missing: [a f]
+	// extra: []
+	// missing: []
 }
