@@ -24,7 +24,7 @@ func ExampleBubbleF() {
 func TestBubble(t *testing.T) {
 	data := []int{5, 3, 1, 8, 0}
 
-	Bubble(InterfaceStruct {
+	Bubble(InterfaceStruct{
 		LenF: func() int {
 			return len(data)
 		},

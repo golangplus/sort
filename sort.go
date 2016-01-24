@@ -209,14 +209,12 @@ func DiffSortedList(LeftLen, RightLen int, Compare func(l, r int) int, OutputLef
 				if l == LeftLen {
 					break forloop
 				}
-
 			case 1:
 				OutputRight(r)
 				r++
 				if r == RightLen {
 					break forloop
 				}
-
 			default:
 				l++
 				r++
@@ -226,7 +224,6 @@ func DiffSortedList(LeftLen, RightLen int, Compare func(l, r int) int, OutputLef
 			}
 		}
 	}
-
 	for l < LeftLen {
 		OutputLeft(l)
 		l++
