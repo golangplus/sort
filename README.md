@@ -1,4 +1,4 @@
-# sort
+# sort [![GoSearch](http://go-search.org/badge?id=github.com%2Fgolangplus%2Fsort)](http://go-search.org/view?id=github.com%2Fgolangplus%2Fsort)
 Plus to the standard `sort` package.
 
 [Godoc](http://godoc.org/github.com/golangplus/sort)
