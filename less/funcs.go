@@ -24,3 +24,14 @@ func IntWithTie(a, b int, tie func() bool) bool {
 	}
 	return tie()
 }
+
+// StrLenOrContent first compare length of a, b. If tie, returns a < b.
+func StrLenOrContent(a, b string) bool {
+	if len(a) < len(b) {
+		return true
+	}
+	if len(a) > len(b) {
+		return false
+	}
+	return a < b
+}

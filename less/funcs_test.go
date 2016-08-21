@@ -37,3 +37,10 @@ func TestIntWithTie(t *testing.T) {
 	assert.True(t, "1 < 1 with true tie", IntWithTie(1, 1, trueF))
 	assert.True(t, "trueFCalled", trueFCalled)
 }
+
+func TestStrLenOrContent(t *testing.T) {
+	assert.True(t, "2 < 11", StrLenOrContent("2", "11"))
+	assert.False(t, "11 < 2", StrLenOrContent("11", "2"))
+	assert.True(t, "1 < 22", StrLenOrContent("1", "22"))
+	assert.True(t, "1 < 2", StrLenOrContent("1", "2"))
+}
